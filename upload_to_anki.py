@@ -1,14 +1,14 @@
 import requests
 import socket
+import settings
 
-
-URL = "http://localhost:8765/"
+URL = "http://localhost:8766/"
 
 def upload_anki(word,definition,card_type,mp3=None):
 
     """
         upload a single note to Anki via AnkiConnect.
-        Default deck name is : vocabulary-auto
+        Default deck name is : vocabular
     """
 
     payload = {
@@ -17,7 +17,7 @@ def upload_anki(word,definition,card_type,mp3=None):
         "params": {
             "notes": [
                 {
-                    "deckName": "vocabulary-auto",
+                    "deckName": "vocabular",
                     "modelName": card_type,
                     "fields": {
                         "Front": word,
@@ -25,16 +25,7 @@ def upload_anki(word,definition,card_type,mp3=None):
                     },
                     "tags": [
                         "automate"
-                    ],
-                    "audio": [{
-                        "url" : mp3,
-                        "fields" : ["Front"],
-                        "filename": f"{word}.mp3",
-                        "skipHash": "7e2c2f954ef6051373ba916f000168dc"
-
-                    }]
-
-
+                    ]
                 }
             ]
         }
@@ -43,7 +34,7 @@ def upload_anki(word,definition,card_type,mp3=None):
     requests.post(URL,json=payload)
 
 # check if AnkiConnect is running and listening
-def is_anki_listening(host="127.0.0.1", port =8765,timeout= 1):
+def is_anki_listening(host="127.0.0.1", port = 8766,timeout= 1):
     with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as sock:
         sock.settimeout(timeout)
         try:
@@ -57,6 +48,8 @@ def ensure_deck_exists():
     payload = {
         "action": "createDeck",
         "version": 6,
-        "params": {"deck": "vocabulary-auto"}
+        "params": {"deck": "vocabular"}
     }
     requests.post(URL, json=payload)
+    settings.deckExists = True
+

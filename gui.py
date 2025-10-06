@@ -1,5 +1,6 @@
-
 from tkinter import *
+import settings
+
 from fetch_definition import get_definition
 from upload_to_anki import upload_anki, is_anki_listening, ensure_deck_exists
 
@@ -12,55 +13,42 @@ It integrates with AnkiConnect to upload definitions, example sentences, and pro
 class AnkiGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Anki-GPT")
-        self.root.configure(background="black")
+        self.root.state("zoomed")
+        self.root.title("Card-Creator")
+        self.root.configure(background="#5b7a85")
 
         # Center the window
         window_width = 1300
         window_height = 750
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
-        y = (screen_height // 2) - (window_height // 2)
-        x = (screen_width // 2) - (window_width // 2)
-        root.geometry(f"{window_width}x{window_height}+{x}+{y}")
-
-
-        # ==== Dropdown ====
-        self.drop = StringVar()
-        options = ["Basic", "Basic (and reversed card)+"]
-        self.drop.set(options[1])
-        dropbox = OptionMenu(root, self.drop, *options)
-        dropbox.config(bg="#101010", fg="white", width=29,
-                       activebackground="#212121", activeforeground="white",
-                       bd=0, font=("Arial", 15), highlightthickness=0)
-        dropbox["menu"].config(bg="#101010", fg="white",
-                               activebackground="#212121", activeforeground="white",
-                               bd=0, font=("Arial", 15), border=0)
-    
-        # Place the dropbox
-        dropbox.place(relx=0.5, rely=0.33, anchor='center')
+        width = root.winfo_screenwidth()
+        height = root.winfo_screenheight()
+        root.geometry("%dx%d" % (width, height))
 
 
         # ==== Entry box ====
         self.ent = Entry(root)
-        self.ent.config(width=29, background="#101010", foreground="white",
+        self.ent.config(width=29, background="white", foreground="black",
                         borderwidth=0, bd=0, font=("Arial", 25), justify="center")
         self.ent.focus_set()
 
         # Place the entry box
-        self.ent.place(relx=0.5, rely=0.5, anchor='center')
+        self.ent.place(relx=0.5, rely=0.25, anchor='center')
 
+        # ==== Entry box 2 ====
+        self.ent2 = Entry(root)
+        self.ent2.config(width=29, background="white", foreground="black",
+                        borderwidth=0, bd=0, font=("Arial", 25), justify="center")
 
-        # ==== Checkbox ====
-        self.checkbox = IntVar()
-        self.checkbox.set(1)
-        cb = Checkbutton(root, text="Include pronunciation", variable=self.checkbox)
-        cb.config(background="black", foreground="white",
-                  selectcolor="#212121", bd=0, highlightthickness=0,
-                  activebackground="#101010", activeforeground="white", font=("Arial", 12))
+        # Place the entry box
+        self.ent2.place(relx=0.5, rely=0.5, anchor='center')
 
-        # Place the checkbox
-        cb.place(relx=0.5, rely=0.6, anchor='center')
+        self.label1 = Label(root)
+        self.label1.config(text="Wort", background="#5b7a85", font=("Arial", 25))
+        self.label1.place(relx=0.5, rely=0.15, anchor='center')
+
+        self.label2 = Label(root)
+        self.label2.config(text="Definition", background="#5b7a85", font=("Arial", 25))
+        self.label2.place(relx=0.5, rely=0.40, anchor='center')
 
 
         # ==== Status bar ====
@@ -133,39 +121,34 @@ class AnkiGUI:
 
     def submit(self, event=None):
         word = self.ent.get()
-        card_type = self.drop.get()
-        checkb = self.checkbox.get()
+        card_type = "basic"
         if not word:
+            return
+
+        definition = self.ent2.get()
+        if not definition:
             return
 
         #check if ankiConnect is on
         if not is_anki_listening():
             self.error_window("Couldn't detect AnkiConnect.")
             return
-        
-        #store the definition
-        definition, mp3 = get_definition(word)
 
-        #check if there's no definition
-        if definition is None:
-            self.error_window("This word might not exist.")
-            return
+        # create a deck if not existed. Deck name : "vocabular"
+        if not settings.deckExists:
+            ensure_deck_exists()
 
-        # create a deck if not existed. Deck name : "vocabulary-auto"
-        ensure_deck_exists()
-        
-        #upload based on checkbox
-        if checkb == 1:
-            upload_anki(word, definition, card_type, mp3)
-        else:
-            upload_anki(word, definition, card_type)
+        # clear the entry box
+        self.ent.delete(0, 'end')
+        self.ent2.delete(0, 'end')
+
+
+        upload_anki(word, definition, card_type)
 
         #show status (done) with a one-second delay.
-        self.root.after(1000, self.show_status)
+        self.root.after(100, self.show_status)
 
 
-        #clear the entry box
-        self.ent.delete(0, 'end')
 
 
 
