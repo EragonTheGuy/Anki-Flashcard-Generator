@@ -7,7 +7,7 @@ from upload_to_anki import upload_anki, is_anki_listening, ensure_deck_exists
 """
 Contains the AnkiGUI class, which builds a Tkinter-based interface for entering words,
 selecting card types, and optionally including pronunciation. 
-It integrates with AnkiConnect to upload definitions, example sentences, and pronunciation (if chosen) to Anki.
+It integrates with AnkiConnect to upload the given word and definition.
 """
 
 class AnkiGUI:
@@ -65,9 +65,19 @@ class AnkiGUI:
         # Place the submit button
         submit_button.place(relx=0.5, rely=0.7, anchor='center')
 
-        # Bind Enter key
-        self.ent.bind("<Return>", self.submit)
-        
+        def key_handler(event):
+            if event.keysym == 'Return' and self.ent2.focus_get() == ".!entry2":
+                print("submitted")
+                self.submit()
+            elif self.ent2.focus_get() == '.!entry2':
+                print("focused")
+            elif event.keysym == 'Return':
+                print("should not submit")
+                print(self.ent2.focus_get())
+                self.ent2.focus_set()
+
+        root.bind('<Key>', key_handler)
+        root.mainloop()
 
     def show_status(self, duration=3000):
         self.status.config(text="Done!", fg="white", bg="black")
@@ -138,12 +148,12 @@ class AnkiGUI:
         if not settings.deckExists:
             ensure_deck_exists()
 
+
+        upload_anki(word, definition, card_type)
+
         # clear the entry box
         self.ent.delete(0, 'end')
         self.ent2.delete(0, 'end')
-
-
-        upload_anki(word, definition, card_type)
 
         #show status (done) with a one-second delay.
         self.root.after(100, self.show_status)

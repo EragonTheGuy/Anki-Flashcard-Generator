@@ -1,6 +1,7 @@
 import requests
 import socket
 import settings
+import asyncio
 
 URL = "http://localhost:8766/"
 
