@@ -39,8 +39,8 @@ It is recommended to use a Python virtual environment to install dependencies sa
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/EragonTheGuy/AnkiCardInterface.git
-   cd AnkiCardINterface
+   git clone https://github.com/EragonTheGuy/Anki-Flashcard-Generator.git
+   cd Anki-FLashcard-Generator
    ```
 2. Install dependencies:
 
