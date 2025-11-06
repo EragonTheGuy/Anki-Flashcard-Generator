@@ -34,21 +34,22 @@ class AnkiGUI:
         # Place the entry box
         self.ent.place(relx=0.5, rely=0.25, anchor='center')
 
-        # ==== Entry box 2 ====
-        self.ent2 = Entry(root)
-        self.ent2.config(width=29, background="white", foreground="black",
-                        borderwidth=0, bd=0, font=("Arial", 25), justify="center")
+        # ==== Text entry box ====
+        self.ent2 = Text(root)
 
-        # Place the entry box
+        self.ent2.config(width=29, background="white", foreground="black",
+                        borderwidth=2, font=("Arial", 25), height=4)
+
+        # Place the text entry box
         self.ent2.place(relx=0.5, rely=0.5, anchor='center')
 
         self.label1 = Label(root)
-        self.label1.config(text="Wort", background="#5b7a85", font=("Arial", 25))
+        self.label1.config(text="Word", background="#5b7a85", font=("Arial", 25))
         self.label1.place(relx=0.5, rely=0.15, anchor='center')
 
         self.label2 = Label(root)
         self.label2.config(text="Definition", background="#5b7a85", font=("Arial", 25))
-        self.label2.place(relx=0.5, rely=0.40, anchor='center')
+        self.label2.place(relx=0.5, rely=0.345, anchor='center')
 
 
         # ==== Status bar ====
