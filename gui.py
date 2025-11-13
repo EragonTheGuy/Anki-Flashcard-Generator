@@ -136,7 +136,8 @@ class AnkiGUI:
         if not word:
             return
 
-        definition = self.ent2.get()
+        print(self.ent2.get('1.0', 'end-1c'))
+        definition = self.ent2.get('1.0', 'end-1c').replace('\n', '<br>')
         if not definition:
             return
 
@@ -154,7 +155,7 @@ class AnkiGUI:
 
         # clear the entry box
         self.ent.delete(0, 'end')
-        self.ent2.delete(0, 'end')
+        self.ent2.delete('1.0', 'end')
 
         #show status (done) with a one-second delay.
         self.root.after(100, self.show_status)
