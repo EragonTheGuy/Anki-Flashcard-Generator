@@ -68,13 +68,8 @@ class AnkiGUI:
 
         def key_handler(event):
             if event.keysym == 'Return' and self.ent2.focus_get() == ".!entry2":
-                print("submitted")
                 self.submit()
-            elif self.ent2.focus_get() == '.!entry2':
-                print("focused")
             elif event.keysym == 'Return':
-                print("should not submit")
-                print(self.ent2.focus_get())
                 self.ent2.focus_set()
 
         root.bind('<Key>', key_handler)
@@ -136,7 +131,6 @@ class AnkiGUI:
         if not word:
             return
 
-        print(self.ent2.get('1.0', 'end-1c'))
         definition = self.ent2.get('1.0', 'end-1c').replace('\n', '<br>')
         if not definition:
             return
